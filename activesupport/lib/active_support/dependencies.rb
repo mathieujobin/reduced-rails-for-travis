@@ -503,6 +503,9 @@ module ActiveSupport #:nodoc:
           return from_mod.const_get(const_name)
         end
       elsif mod = autoload_module!(from_mod, const_name, qualified_name, path_suffix)
+        if mod.is_a?(Module) && mod.instance_methods.empty?
+          raise "#{const_name} could not be found."
+        end
         return mod
       elsif (parent = from_mod.parent) && parent != from_mod &&
             ! from_mod.parents.any? { |p| p.const_defined?(const_name, false) }
